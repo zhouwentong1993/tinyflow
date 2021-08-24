@@ -1,17 +1,26 @@
 package com.wentong.tinyflow.service;
 
+import com.wentong.tinyflow.data.ExecuteDAO;
+import com.wentong.tinyflow.metadata.WorkflowDef;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
 public class WorkflowService {
 
-    @Autowired
-    private RedisTemplate redisTemplate;
+    private final ExecuteDAO executeDAO;
 
-    public String getById(@NonNull String id) {
-        return (String) redisTemplate.opsForValue().get(id);
+    public WorkflowService(ExecuteDAO executeDAO) {
+        this.executeDAO = executeDAO;
+    }
+
+    public WorkflowDef getById(@NonNull String id) {
+        return executeDAO.getWorkflowDef(id);
+    }
+
+
+    public String save(WorkflowDef workflowDef) {
+        executeDAO.saveWorkflowDef(workflowDef.getId(), workflowDef);
+        return workflowDef.getId();
     }
 }
